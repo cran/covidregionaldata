@@ -44,10 +44,41 @@ test_that("get_ecdc_cases works as expected", {
 test_that("get_who_cases works as expected", {
   skip_on_cran()
   
-  json_url <- "https://dashboards-dev.sprinklr.com/data/9043/global-covid19-who-gis.json"
-  who <- jsonlite::fromJSON(json_url, flatten = F)
-  who <- as.data.frame(who$rows)
+  url <- "https://covid19.who.int/WHO-COVID-19-global-data.csv"
+  who <- readr::read_csv(url)
   
-  expect_equal(ncol(who), 7)
+  expect_equal(ncol(who), 8)
   
+})
+
+
+test_that("get_ecdc_cases returns a region for every country", {
+  skip_on_cran()
+  
+  library(dplyr)
+  
+  all_countries <- get_national_data(source = "ecdc")
+  
+  all_countries <- all_countries %>%  
+    dplyr::filter(is.na(un_region)) %>% 
+    dplyr::group_by(country) %>% 
+    dplyr::tally()
+  
+  expect_true(nrow(all_countries) == 0)
+})
+
+
+test_that("get_who_cases returns a region for every country", {
+  skip_on_cran()
+  
+  library(dplyr)
+  
+  all_countries <- get_national_data(source = "who")
+  
+  all_countries <- all_countries %>%  
+    dplyr::filter(is.na(un_region), !is.na(country)) %>% 
+    dplyr::group_by(country) %>% 
+    dplyr::tally()
+  
+  expect_true(nrow(all_countries) == 0)
 })

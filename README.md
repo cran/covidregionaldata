@@ -3,9 +3,10 @@
 [![badge](https://img.shields.io/badge/Launch-package-lightblue.svg)](https://mybinder.org/v2/gh/epiforecasts/covidregionaldata/master?urlpath=rstudio)
 [![R-CMD-check](https://github.com/epiforecasts/covidregionaldata/workflows/R-CMD-check/badge.svg)](https://github.com/epiforecasts/covidregionaldata/actions)
 [![Codecov test coverage](https://codecov.io/gh/epiforecasts/covidregionaldata/branch/master/graph/badge.svg)](https://codecov.io/gh/epiforecasts/covidregionaldata?branch=master)
-[![develVersion](https://img.shields.io/badge/devel%20version-0.5.0-green.svg?style=flat)](https://github.com/epiforecasts/covidregionaldata)
-[![Documentation](https://img.shields.io/badge/Package-documentation-lightgrey.svg?style=flat)](https://epiforecasts.io/covidregionaldata)
+[![develVersion](https://img.shields.io/badge/devel%20version-0.6.0-green.svg?style=flat)](https://github.com/epiforecasts/covidregionaldata/)
 [![DOI](https://zenodo.org/badge/271601189.svg)](https://zenodo.org/badge/latestdoi/271601189)
+[![metacran downloads](http://cranlogs.r-pkg.org/badges/grand-total/covidregionaldata?color=ff69b4)](https://cran.r-project.org/package=covidregionaldata)
+
 
 An interface to subnational and national level Covid-19 data. For all countries supported, this includes a daily time-series of cases. Wherever available we also provide  data on deaths, hospitalisations, and tests. National level data is also supported using a range of data sources as well as linelist data and links to intervention data sets.
 
@@ -31,6 +32,9 @@ remotes::install_github("epiforecasts/covidregionaldata")
 ```
 
 ## Quick start
+
+[![Documentation](https://img.shields.io/badge/Package-documentation-lightgrey.svg?style=flat)](https://epiforecasts.io/covidregionaldata/)
+
 To get worldwide time-series data by country (sourced from the ECDC), use `get_national_data()`:
 ``` r
 covidregionaldata::get_national_data()
@@ -173,6 +177,8 @@ Note that Date is not included if the `totals` argument is set to TRUE. Level 2 
 * `hosp_total`: total reported hospitalisations up to and including that day (note this is cumulative total of new reported, _not_ total currently in hospital)
 * `tested_new`: tests for that day
 * `tested_total`: total tests completed up to and including that day
+
+The exception to this is data for the UK. This is in its raw state, as regions have separate and sometimes incompatible data reporting.
 
 #### National data
 In addition to the above, the following columns are included when using `get_national_data()`.
