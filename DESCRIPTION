@@ -1,6 +1,6 @@
 Package: covidregionaldata
 Title: Subnational Data for the Covid-19 Outbreak
-Version: 0.6.0
+Version: 0.8.2
 Authors@R: c(person(given = "Sam Abbott",
            role = c("aut", "cre"),
            email = "sam.abbott@lshtm.ac.uk",
@@ -16,13 +16,16 @@ Authors@R: c(person(given = "Sam Abbott",
            email = "Hamish.Gibbs@lshtm.ac.uk",
            role = c("aut"),
            comment = c(ORCID = "0000-0003-4413-453X")),
+    person("Sophie", "Meakin", 
+           email = "sophie.meaking@lshtm.ac.uk", 
+           role = c("ctb")), 
     person("Joel", "Hellewell",
            email = "joel.hellewell@lshtm.ac.uk",
-           role = c("aut"),
+           role = c("ctb"),
            comment = c(ORCID = "0000-0003-2683-0849")),
     person("James", "Munday",
            email = "james.munday@lshtm.ac.uk",
-           role = c("aut")),
+           role = c("ctb")),
     person("Patrick", "Barks",
        email = "patrick.barks@epicentre.msf.org",
        role = c("ctb")),
@@ -33,6 +36,9 @@ Authors@R: c(person(given = "Sam Abbott",
        email = "flavio.finger@epicentre.msf.org",
        role = c("ctb"),
        comment = c(ORCID = "0000-0002-8613-5170")),
+    person("Richard", "Boyes",
+            comment = c(URL = "https://github.com/rboyes"),
+            role = c("ctb")),
     person("Sebastian", "Funk",
             email = "sebastian.funk@lshtm.ac.uk",
             role = c("aut")))
@@ -49,7 +55,8 @@ Description: An interface to subnational and national level Covid-19 data.
     Canada: <https://health-infobase.canada.ca/>; Colombia: <https://github.com/danielcs88/colombia_covid-19>;
     Germany: <https://npgeo-corona-npgeo-de.hub.arcgis.com/datasets/dd4580c810204019a7b8eb3e0b329dd6_0>;
     India: <https://api.covid19india.org/>; Italy: <https://github.com/pcm-dpc/COVID-19>;
-    Russia: <https://github.com/grwlf/COVID-19_plus_Russia>;  UK: <https://coronavirus.data.gov.uk>;
+    Russia: <https://github.com/grwlf/COVID-19_plus_Russia>;  UK: <https://coronavirus.data.gov.uk>, 
+    <https://www.england.nhs.uk/statistics/statistical-work-areas/covid-19-hospital-activity/>;
     USA: <https://github.com/nytimes/covid-19-data>),
     and geocoding data (Colombia: <https://en.wikipedia.org/wiki/ISO_3166-2:CO>; Russia: <https://en.wikipedia.org/wiki/ISO_3166-2:RU>).
 Language: en-gb
@@ -61,22 +68,25 @@ Depends: R (>= 2.10)
 Imports: readr, dplyr, tibble, purrr, stringr, magrittr, memoise,
         lubridate, tidyr (>= 1.0.0), httr, yaml, readxl, xml2, rvest,
         jsonlite, countrycode
-Suggests: data.table, pkgdown, testthat, spelling
+Suggests: data.table, pkgdown, testthat, spelling, knitr, rmarkdown,
+        rworldmap, ggplot2
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
 NeedsCompilation: no
-Packaged: 2020-08-27 15:42:21 UTC; epinow2
+Packaged: 2020-12-11 23:28:10 UTC; epinow2
 Author: Sam Abbott [aut, cre] (<https://orcid.org/0000-0001-8057-8037>),
   Katharine Sherratt [aut] (<https://orcid.org/0000-0003-4413-453X>),
   Jonnie Bevan [aut],
   Hamish Gibbs [aut] (<https://orcid.org/0000-0003-4413-453X>),
-  Joel Hellewell [aut] (<https://orcid.org/0000-0003-2683-0849>),
-  James Munday [aut],
+  Sophie Meakin [ctb],
+  Joel Hellewell [ctb] (<https://orcid.org/0000-0003-2683-0849>),
+  James Munday [ctb],
   Patrick Barks [ctb],
   Paul Campbell [aut],
   Flavio Finger [ctb] (<https://orcid.org/0000-0002-8613-5170>),
+  Richard Boyes [ctb] (https://github.com/rboyes),
   Sebastian Funk [aut]
 Maintainer: Sam Abbott <sam.abbott@lshtm.ac.uk>
 Repository: CRAN
-Date/Publication: 2020-08-27 19:40:16 UTC
+Date/Publication: 2020-12-12 15:00:14 UTC

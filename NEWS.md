@@ -1,3 +1,22 @@
+# covidregionaldata 0.8.2
+
+* Updates the API backend used to extract UK data to V2. Adds a release date variable which can be used to return data releases from specified dates rather than the latest snapshot.
+* Various fixes to maintain compatibility with data set sources.
+* Adds a quickstart vignette with examples of exploratory data analysis. 
+
+# covidregionaldata 0.7.0 
+
+## Breaking changes
+
+* `get_linelist`: argument `clean` changed to `clean_dates` to reflect slight change in use case.
+
+## Changes
+
+* Added new option to return UK data by NHS region. This will also return "first admissions" hospital data (excludes readmissions). Specify 'nhsregions = TRUE'. Default is FALSE, returning ONS regions as before.
+* Fixed inconsistent reference dates for variables in UK data. cases_new and cases_total now by "Specimen date" (date of test), while deaths_new and deaths_total are by "Date of death", for all regions and nations.
+
+* Additional delays added to `get_linelist` when `clean_dates = TRUE`.
+
 # covidregionaldata 0.6.0 
 
 * Added whitespace trimming to all regional data functions. 
