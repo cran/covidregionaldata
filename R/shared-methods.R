@@ -1,7 +1,11 @@
 #' Initialise a child class of DataClass if it exists
 #'
-#' @description Initialise a child class of DataClass if it exists.
-#' @param class A character string specifying the `DataClass` to initialise.
+#' @description This function initialises classes based on the `DataClass()`
+#'  which allows documented downloading, cleaning, and processing. See the
+#'  examples for some potential use cases and the `DataClass()` documentation
+#'  for more details.
+#'
+#' @param class A character string specifying the `DataClass()` to initialise.
 #' Not case dependent and matching is based on either the class name or the its
 #' country definition. For a list of options use `get_available_datasets()`.
 #' @param level A character string indicating the target administrative level
@@ -21,6 +25,7 @@
 #' @param ... Additional arguments to pass to class specific functionality.
 #' @return An initialised version of the target class if available,
 #' e.g. `Italy()`
+#' @family interface
 #' @inheritParams message_verbose
 #' @inheritParams get_available_datasets
 #' @rdname initialise_dataclass
@@ -29,14 +34,46 @@
 #' @importFrom purrr map_lgl
 #' @export
 #' @examples
-#' # Initialise Italian data
-#' italy <- initialise_dataclass("Italy")
+#' \dontrun{
+#' # set up a cache to store data to avoid downloading repeatedly
+#' start_using_memoise()
 #'
-#' # Initialise UK data with a partial name match
-#' uk <- initialise_dataclass("United Kingdom")
+#' # check currently available datasets
+#' get_available_datasets()
 #'
-#' # Initialise ECDC data
-#' ecdc <- initialise_dataclass("ecdc")
+#' # initialise a data set in the United Kingdom
+#' # at the UTLA level
+#' utla <- UK$new(level = "2")
+#'
+#' # download UTLA data
+#' utla$download()
+#'
+#' # clean UTLA data
+#' utla$clean()
+#'
+#' # inspect available level 1 regions
+#' utla$available_regions(level = "1")
+#'
+#' # filter data to the East of England
+#' utla$filter("East of England")
+#'
+#' # process UTLA data
+#' utla$process()
+#'
+#' # return processed and filtered data
+#' utla$return()
+#'
+#' # inspect all data steps
+#' utla$data
+#'
+#' # initialise Italian data, download, clean and process it
+#' italy <- initialise_dataclass("Italy", get = TRUE)
+#' italy$return()
+#'
+#' # initialise ECDC data, fully process it, and return totals
+#' ecdc <- initialise_dataclass("ecdc", get = TRUE, totals = TRUE)
+#' ecdc$return()
+#' }
 initialise_dataclass <- function(class = character(), level = "1",
                                  totals = FALSE, localise = TRUE,
                                  regions, verbose = TRUE, steps = FALSE,
@@ -62,7 +99,9 @@ initialise_dataclass <- function(class = character(), level = "1",
 
   if (nrow(target_class) == 0) {
     stop(
-      "No data available for ", class, " see get_available_datasets(type = c(", paste(type, collapse = ", "), ")) for supported datasets"
+      "No data available for ", class,
+      " see get_available_datasets(type = c(",
+      paste(type, collapse = ", "), ")) for supported datasets"
     )
   }
 
@@ -76,16 +115,19 @@ initialise_dataclass <- function(class = character(), level = "1",
   return(region_class)
 }
 
-#' R6 Class containing non-origin specific methods
+#' R6 Class containing non-dataset specific methods
 #'
-#' @description Acts as parent class for individual origin objects,
-#' allowing them to access general methods.
+#' @description A parent class containing non-dataset specific methods.
 #'
-#' @details All countries have shared methods for extracting region codes,
+#' @details All data sets have shared methods for extracting geographic codes,
 #' downloading, processing, and returning data. These functions are contained
-#' within this parent class and so are accessible by all countries which
-#' inherit from here. Individual countries can overwrite any functions or
-#' fields providing they define a method with the same name.
+#' within this parent class and so are accessible by all data sets which
+#' inherit from here. Individual data sets can overwrite any functions or
+#' fields providing they define a method with the same name, and can be
+#' extended with additinal functionality. See the individual method documentaion
+#' for further details.
+#' @family interface
+#' @importFrom R6 R6Class
 DataClass <- R6::R6Class(
   "DataClass",
   public = list(
@@ -149,10 +191,16 @@ DataClass <- R6::R6Class(
     #' @field target_regions A character vector of regions to filter for. Used
     #' by the `filter method`.
     target_regions = NULL,
+    #' @field process_fns array, additional, user supplied functions to process
+    #' the data.
+    process_fns = c(set_negative_values_to_zero),
     #' @description Place holder for custom country specific function to load
     #' region codes.
     set_region_codes = function() {
     },
+    #' @field filter_level Character The level of the data to filter at.
+    #' Defaults to the target level.
+    filter_level = NA,
 
     #' @description Initialize function used by all `DataClass` objects.
     #' Set up the `DataClass` class with attributes set to input parameters.
@@ -160,6 +208,9 @@ DataClass <- R6::R6Class(
     #' @param level A character string indicating the target administrative
     #' level of the data with the default being "1". Currently supported
     #' options are level 1 ("1) and level 2 ("2").
+    #' @param filter_level A character string indicating the level to filter at.
+    #' Defaults to the level of the data if not specified and if not otherwise
+    #' defined in the class.
     #' Use `get_available_datasets()` for supported options by dataset.
     #' @param regions A character vector of target regions to be assigned to
     #' the`target_regions` field if present.
@@ -173,18 +224,34 @@ DataClass <- R6::R6Class(
     #' cleaning steps be kept and output in a list.
     #' @param get Logical, defaults to FALSE. Should the class `get` method be
     #' called (this will download, clean, and process data at initialisation).
+    #' @param process_fns Array, additional functions to process the data.
+    #' Users can supply their own functions here which would act on clean data
+    #' and they will be called alongside our default processing functions.
+    #' The default optional function added is `set_negative_values_to_zero`.
+    #' if process_fns is not set (see `process_fns` field for all defaults).
+    #' If you want to keep this when supplying your own processing functions
+    #' remember to add it to your list also. If you feel you have created a
+    #' cool processing function that others could benefit from please submit a
+    # nolint start
+    #' Pull Request to our \href{https://github.com/epiforecasts/covidregionaldata}{github repository}
+    # nolint end
+    #' and we will consider adding it to the package.
     #' @export
-    initialize = function(level = "1", regions,
+    initialize = function(level = "1", filter_level, regions,
                           totals = FALSE, localise = TRUE,
-                          verbose = TRUE, steps = FALSE, get = FALSE) {
-      if (any(self$supported_levels %in% level)) {
-        self$level <- level
-      } else {
-        stop(
-          level,
-          " is not a supported level check supported_levels for options"
-        )
+                          verbose = TRUE, steps = FALSE, get = FALSE,
+                          process_fns) {
+      level <- as.character(level)
+      self$level <- level
+      if (is.na(self$filter_level)) {
+        self$filter_level <- level
       }
+      if (!missing(filter_level)) {
+        self$filter_level <- filter_level
+      }
+      check_level(self$level, self$supported_levels)
+      check_level(self$filter_level, self$supported_levels)
+
       self$totals <- totals
       self$localise <- localise
       self$verbose <- verbose
@@ -192,6 +259,9 @@ DataClass <- R6::R6Class(
       self$region_name <- self$supported_region_names[[self$level]]
       self$code_name <- self$supported_region_codes[[self$level]]
       self$set_region_codes()
+      if (!missing(process_fns)) {
+        self$process_fns <- process_fns
+      }
 
       if (!missing(regions)) {
         self$target_regions <- regions
@@ -241,6 +311,7 @@ DataClass <- R6::R6Class(
       message_verbose(self$verbose, "Cleaning data")
       self$clean_common()
 
+      check_level(self$level, self$supported_levels)
       specific <- paste0("clean_level_", self$level)
 
       if (any(names(self) %in% specific)) {
@@ -256,14 +327,43 @@ DataClass <- R6::R6Class(
 
     },
 
+    #' @description Show regions that are available to be used for
+    #' filtering operations. Can only be called once `clean()` has been
+    #' called. Filtering level is determined by checking the `filter_level`
+    #' field.
+    #' @param level A character string indicating the level to filter at.
+    #' Defaults to using the `filter_level` field if not specified
+    #' @importFrom tidyselect all_of
+    #' @importFrom dplyr select filter pull
+    available_regions = function(level) {
+      if (is.null(self$data$clean)) {
+        stop("Data must first be cleaned using the clean method")
+      }
+      if (!missing(level)) {
+        self$filter_level <- level
+      }
+      check_level(self$filter_level, self$supported_levels)
+      check_level(self$level, self$supported_levels)
+
+      filter_level <- glue_level(self$filter_level)
+      target_level <- glue_level(self$level)
+
+      regions <- self$data$clean %>%
+        select(all_of(c(filter_level, target_level))) %>%
+        filter(!is.na(.data[[target_level]])) %>%
+        filter(!(.data[[target_level]] %in% "Unknown")) %>%
+        pull(.data[[filter_level]]) %>%
+        unique()
+      return(regions)
+    },
     #' @description Filter cleaned data for a specific region  To be called
     #' after \href{#method-clean}{\code{clean()}}
     #' @param regions A character vector of target regions. Overrides the
-    #' current class setting for `target_regions`. By default filters at the
-    #' current spatial level of interest.
+    #' current class setting for `target_regions`.
+    #' @param level Character The level of the data to filter at. Defaults to
+    #' the lowest level in the data.
     #' @importFrom dplyr filter
-    #' @importFrom rlang !!
-    filter = function(regions) {
+    filter = function(regions, level) {
       if (is.null(self$data$clean)) {
         stop("Data must first be cleaned using the clean method")
       }
@@ -272,20 +372,27 @@ DataClass <- R6::R6Class(
         self$target_regions <- regions
       }
 
+      if (!missing(level)) {
+        check_level(level, self$supported_levels)
+        self$filter_level <- level
+      }
+      check_level(self$filter_level, self$supported_levels)
+      check_level(self$level, self$supported_levels)
+
+
       if (!is.null(self$target_regions)) {
         message_verbose(
           self$verbose,
           "Filtering data to: ", paste(self$target_regions, collapse = ", ")
         )
-        condition <- paste0("level_", self$level, "_region")
         dt <- self$data$clean %>%
           filter(
-            eval(parse(text = condition)) %in% self$target_regions
+            .data[[glue_level(self$filter_level)]] %in% self$target_regions
           )
         if (nrow(dt) == 0) {
           stop("No data found for target regions")
         } else {
-          self$data$clean <- dt
+          self$data$filtered <- dt
         }
       }
     },
@@ -306,10 +413,22 @@ DataClass <- R6::R6Class(
     #' \item{Calculates missing columns from existing ones
     #' `calculate_columns_from_existing_data()`}
     #' }
-    #' Dynamically works for level 1 and level 2 regions.
-    process = function() {
+    #' @param process_fns Array, additional functions to process the data.
+    #' Users can supply their own functions here which would act on clean data
+    #' and they will be called alongside our default processing functions.
+    #' The default optional function added is `set_negative_values_to_zero`.
+    #' if process_fns is not set (see `process_fns` field for all defaults).
+    process = function(process_fns) {
       if (is.null(self$data$clean)) {
         stop("Data must first be cleaned using the clean method")
+      }
+
+      if (is.null(self$data$filtered)) {
+        self$data$filtered <- self$data$clean
+      }
+
+      if (!missing(process_fns)) {
+        self$process_fns <- process_fns
       }
 
       message_verbose(self$verbose, "Processing data")
@@ -321,12 +440,13 @@ DataClass <- R6::R6Class(
       )
 
       self$data$processed <- process_internal(
-        clean_data = self$data$clean,
-        level = paste0("level_", self$level, "_region"),
+        clean_data = self$data$filtered,
+        level = glue_level(self$level),
         group_vars = region_vars,
         totals = self$totals,
         localise = self$localise,
-        verbose = self$verbose
+        verbose = self$verbose,
+        process_fns = self$process_fns
       )
     },
 
@@ -352,7 +472,7 @@ DataClass <- R6::R6Class(
     return = function() {
       if (is.null(self$data)) {
         stop("Data must first be downloaded (download), cleaned (clean) or
-             processed (process)")
+             processed (process), and optionally filtered (filter).")
       }
       self$data$return <- NA
       if (self$steps) {
@@ -379,6 +499,9 @@ DataClass <- R6::R6Class(
         level_2_region = ifelse(is.null(self$supported_region_names[["2"]]),
           NA, self$supported_region_names[["2"]]
         ),
+        level_3_region = ifelse(is.null(self$supported_region_names[["3"]]),
+          NA, self$supported_region_names[["3"]]
+        ),
         type = ifelse(any(class(self) %in% "CountryDataClass"),
           "national", "regional"
         ),
@@ -390,33 +513,51 @@ DataClass <- R6::R6Class(
   )
 )
 
-#' R6 Class containing  national level methods
-#' @description Acts as parent class for national data classes, (`WHO()` and
-#' `ECDC()`) allowing them to access general methods defined in [DataClass()].
-#' Adds filters to get the target country from national data sources.
+#' R6 Class containing national level methods
 #'
-#' @details Inherits from `DataClass`
+#' @description Acts as parent class for national data classes, allowing them
+#'  to access general methods defined in [DataClass()] but with additional
+#   features tuned to national level functionality.
+#' @details On top of the methods documented in [DataClass()], this class
+#' implements a custom filter function that supports partial matching to
+#' English country names using the `countrycode` package.
 #' @export
+#' @family interface
+#' @importFrom R6 R6Class
 CountryDataClass <- R6::R6Class("CountryDataClass",
   inherit = DataClass,
   public = list(
+    #' @field filter_level Character The level of the data to filter at.
+    #' Defaults to the country level of the data.
+    filter_level = "1",
     #' @description Filter method for country level data. Uses `countryname`
     #' to match input countries with known names.
     #' @param countries A character vector of target countries. Overrides the
-    #' current class setting for `target_regions`.
+    #' current class setting for `target_regions`. If the `filter_level` field
+    #' `level` argument is set to anything other than level 1 this is passed
+    #' directly to the parent `DataClass()` `filter()` method with no
+    #' alteration.
+    #' @param level Character The level of the data to filter at. Defaults to
+    #' the conuntry level if not specified.
     #' @importFrom countrycode countryname
-    filter = function(countries) {
-      if (!missing(countries)) {
-        self$target_regions <- countries
+    filter = function(countries, level) {
+      if (!missing(level)) {
+        check_level(level, self$supported_levels)
+        self$filter_level <- level
       }
+      if (self$filter_level == "1") {
+        if (!missing(countries)) {
+          self$target_regions <- countries
+        }
 
-      if (!is.null(self$target_regions)) {
-        self$target_regions <- countryname(
-          self$target_regions,
-          destination = "country.name.en"
-        )
-        if (all(is.na(self$target_regions))) {
-          stop("No countries found with target names")
+        if (!is.null(self$target_regions)) {
+          self$target_regions <- countryname(
+            self$target_regions,
+            destination = "country.name.en"
+          )
+          if (all(is.na(self$target_regions))) {
+            stop("No countries found with target names")
+          }
         }
       }
       super$filter()

@@ -2,13 +2,14 @@
 % Please edit documentation in R/WHO.R
 \name{WHO}
 \alias{WHO}
-\title{R6 Class containing specific attributes and methods for WHO data}
+\title{R6 Class containing specific attributes and methods for World Health
+Organisation data}
 \source{
 \url{https://covid19.who.int/}
 }
 \description{
-Information for downloading, cleaning
-and processing COVID-19 region data from the World Health Organisation
+Information for downloading, cleaning and processing COVID-19
+region data from the World Health Organisation
 }
 \examples{
 \dontrun{
@@ -16,7 +17,14 @@ national <- WHO$new(verbose = TRUE, steps = TRUE, get = TRUE)
 national$return()
 }
 }
+\seealso{
+National data sources
+\code{\link{ECDC}},
+\code{\link{Google}},
+\code{\link{JHU}}
+}
 \concept{dataset}
+\concept{national}
 \section{Super classes}{
 \code{\link[covidregionaldata:DataClass]{covidregionaldata::DataClass}} -> \code{\link[covidregionaldata:CountryDataClass]{covidregionaldata::CountryDataClass}} -> \code{WHO}
 }
@@ -49,6 +57,7 @@ only entry, is be named main.}
 \if{html}{
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="available_regions">}\href{../../covidregionaldata/html/DataClass.html#method-available_regions}{\code{covidregionaldata::DataClass$available_regions()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="clean">}\href{../../covidregionaldata/html/DataClass.html#method-clean}{\code{covidregionaldata::DataClass$clean()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="download">}\href{../../covidregionaldata/html/DataClass.html#method-download}{\code{covidregionaldata::DataClass$download()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="get">}\href{../../covidregionaldata/html/DataClass.html#method-get}{\code{covidregionaldata::DataClass$get()}}\out{</span>}

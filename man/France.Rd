@@ -20,7 +20,26 @@ region <- France$new(level = "2", verbose = TRUE, steps = TRUE, get = TRUE)
 region$return()
 }
 }
+\seealso{
+Subnational data sources
+\code{\link{Belgium}},
+\code{\link{Brazil}},
+\code{\link{Canada}},
+\code{\link{Colombia}},
+\code{\link{Cuba}},
+\code{\link{Germany}},
+\code{\link{Google}},
+\code{\link{India}},
+\code{\link{Italy}},
+\code{\link{JHU}},
+\code{\link{Lithuania}},
+\code{\link{Mexico}},
+\code{\link{SouthAfrica}},
+\code{\link{UK}},
+\code{\link{USA}}
+}
 \concept{dataset}
+\concept{subnational}
 \section{Super class}{
 \code{\link[covidregionaldata:DataClass]{covidregionaldata::DataClass}} -> \code{France}
 }
@@ -57,6 +76,7 @@ specific.}
 \if{html}{
 \out{<details ><summary>Inherited methods</summary>}
 \itemize{
+\item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="available_regions">}\href{../../covidregionaldata/html/DataClass.html#method-available_regions}{\code{covidregionaldata::DataClass$available_regions()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="clean">}\href{../../covidregionaldata/html/DataClass.html#method-clean}{\code{covidregionaldata::DataClass$clean()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="clean_common">}\href{../../covidregionaldata/html/DataClass.html#method-clean_common}{\code{covidregionaldata::DataClass$clean_common()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="download">}\href{../../covidregionaldata/html/DataClass.html#method-download}{\code{covidregionaldata::DataClass$download()}}\out{</span>}
