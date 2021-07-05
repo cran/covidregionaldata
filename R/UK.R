@@ -101,6 +101,11 @@ UK <- R6::R6Class("UK",
       "newPillarOneTestsByPublishDate", "newPillarTwoTestsByPublishDate",
       "newPillarThreeTestsByPublishDate", "newPillarFourTestsByPublishDate"
     ),
+    #' @field source_text Plain text description of the source of the data
+    source_text = "Public Health England",
+    #' @field source_url Website address for explanation/introduction of the
+    #' data
+    source_url = "https://coronavirus.data.gov.uk/",
 
     #' @description Specific function for getting region codes for UK .
     set_region_codes = function() {
@@ -355,6 +360,8 @@ UK <- R6::R6Class("UK",
     #' @source \url{https://coronavirus.data.gov.uk/details/download}
     # nolint end
     #' @importFrom lubridate year month
+    #' @importFrom httr GET status_code
+    #' @importFrom purrr map_chr
     #' @importFrom readxl cell_limits
     #' @importFrom dplyr %>%
     download_nhs_regions = function() {
@@ -376,19 +383,38 @@ UK <- R6::R6Class("UK",
       )
 
       # 1. Data from 7 April 2021 to now:
-      nhs_recent_url <- paste0(
-        self$data_urls[["nhs_recent_url"]],
-        "/wp-content/uploads/sites/2/",
-        year(self$release_date), "/",
-        ifelse(month(self$release_date) < 10,
-          paste0(0, month(self$release_date)),
-          month(self$release_date)
-        ),
-        "/COVID-19-daily-admissions-and-beds-",
-        gsub("-", "", as.character(self$release_date)),
-        ".xlsx"
+      # Data not always daily; set up to try urls for last 7 days
+      try_date_seq <- seq.Date(self$release_date,
+        by = -1, length.out = 7
+      )
+      try_urls <- map_chr(
+        try_date_seq,
+        ~ paste0(
+          self$data_urls[["nhs_recent_url"]],
+          "/wp-content/uploads/sites/2/",
+          year(.x), "/",
+          ifelse(month(.x) < 10,
+            paste0(0, month(.x)),
+            month(.x)
+          ),
+          "/COVID-19-daily-admissions-and-beds-",
+          gsub("-", "", as.character(.x)),
+          ".xlsx"
+        )
       )
 
+      names(try_urls) <- try_date_seq
+      # Check for working urls
+      url_status <- map_chr(
+        try_urls,
+        ~ GET(.x) %>%
+          status_code()
+      )
+      # Keep latest working url
+      url_status <- url_status[(url_status == 200)]
+      names(url_status) <- as.Date(names(url_status))
+      nhs_recent_url <- try_urls[as.character(max(names(url_status)))]
+      # Get latest url download
       recent <- download_excel(nhs_recent_url,
         "nhs_recent.xlsx",
         verbose = self$verbose,
@@ -398,7 +424,8 @@ UK <- R6::R6Class("UK",
       )
 
       # 2. Data for August 2020 to 7 April 2021
-      archive <- download_excel(self$data_urls[["nhs_archive_url"]],
+      archive <- download_excel(
+        as.character(self$data_urls[["nhs_archive_url"]]),
         "nhs_archive.xlsx",
         verbose = self$verbose,
         transpose = TRUE,
@@ -495,6 +522,56 @@ UK <- R6::R6Class("UK",
           release_date = self$release_date
         )
       return(clean_data)
+    },
+
+    #' @description Specific tests for UK data. In addition to generic tests ran
+    #' by `DataClass$test()` data for NHS regions are downloaded and ran through
+    #' the same generic checks (test_cleaning, test_processing, test_return). If
+    #' download = TRUE or a snapshot file is not found, the nhs data is
+    #' downloaded and saved to the snapshot location provided. If an existing
+    #' snapshot file is found then this data is used in the next tests.
+    #' Tests data can be downloaded, cleaned, processed and returned. Designed
+    #' to be ran from `test` and not ran directly.
+    #' @param self_copy R6class the object to test.
+    #' @param download logical. To download the data (TRUE) or use a snapshot
+    #' (FALSE). Defaults to FALSE.
+    #' @param all logical. Run tests with all settings (TRUE) or with those
+    #' defined in the current class instance (FALSE). Defaults to FALSE.
+    #' @param snapshot_path character_array the path to save the downloaded
+    #' snapshot to. Works on the snapshot path constructed by `test` but adds
+    # '_nhs' to the end.
+    #' @param ... Additional parameters to pass to `specific_tests`
+    #' @importFrom dplyr slice_tail
+    specific_tests = function(self_copy, download = FALSE,
+                              all = FALSE, snapshot_path = "", ...) {
+      if (all == TRUE) {
+        if (self_copy$level == "1") {
+          self_copy$data_name <- "UK level 1 with 'nhsregions=TRUE'"
+          self_copy$nhsregions <- TRUE
+          snapshot_path <- gsub(".rds", "_nhs.rds", snapshot_path)
+          if (!file.exists(snapshot_path)) {
+            download <- TRUE
+          }
+          if (download) {
+            test_that(paste(self_copy$data_name, " downloads sucessfully"), { # nolint
+              self_copy$data$raw$nhs <- self_copy$download_nhs_regions()
+              expect_s3_class(self_copy$data$raw$nhs, "data.frame")
+              expect_true(nrow(self_copy$data$raw$nhs) > 0)
+              expect_true(ncol(self_copy$data$raw$nhs) >= 2)
+            })
+            self_copy$data$raw$nhs <- slice_tail(
+              self_copy$data$raw$nhs,
+              n = 1000
+            )
+            saveRDS(self_copy$data$raw$nhs, snapshot_path)
+          } else {
+            self_copy$data$raw$nhs <- readRDS(snapshot_path)
+          }
+          test_cleaning(DataClass_obj = self_copy)
+          test_processing(DataClass_obj = self_copy)
+          test_return(DataClass_obj = self_copy)
+        }
+      }
     }
   )
 )

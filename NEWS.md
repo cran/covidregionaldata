@@ -1,3 +1,33 @@
+# covidregionaldata 0.9.2
+
+This release adds support for the Covid19 Data Hub which includes Google and Apple mobility data amongst a large range of other data sets, data from the European Commission's Joint Research Centre which is at both the regional and national level, and individual sources for regional data from several countries. Package updates have been made in line with a software review at the [Journal of Open Source Software](https://github.com/openjournals/joss-reviews/issues/3290). Finally, this release exposes more of the testing infrastructure to users and adds a package hexsticker. 
+
+Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for contributions towards this release.
+
+## New features
+
+* Support added for data sets from Covid19 Data Hub. This source aggregates a range of data at a national and subnational level and provides keys to link to mobility data provided by Apple and Google (by @joseph-palmer).
+* Support added for data from the European Commission's Joint Research Centre (JRC). The source aggregates incidence data at the country and regional level for 34 UCPM Participating States plus Switzerland (by @joseph-palmer).
+* Support added for data from the Netherlands provided by RVIM (English: National Institute for Public Health and the Environment). This source provides case, deaths and hospital admission data at the province and municipal levels (by @joseph-palmer).
+* Support added for data from Switzerland and Liechtenstein collated by Canton Zurich (@OpenZH). This source provides case, deaths and hospital admission data at the canton level (by @RichardMN).
+* Made package changes recomended in the JOSS review, including additional statements of need to the README, updates to the manuscript (paper.md) and fixes a bug of multiple sources for some countries. We are very grateful for the detailed feedback given by the JOSS reviewers and their help in improving this package.
+
+## Changes to implemented data sources
+
+* Increased the robustness of fetching UK NHS admissions by region. Rather than testing a single date for data we now look over the last 7 days and pick the most recent available data set (by @kathsherratt).
+
+## Other changes
+
+* Testing of classes updated to allow for at least one of `common_data_urls` or `level_data_urls` to be present. The previous default which forced the presence of `common_data_urls` meant that several classes had to define an empty field (by @joseph-palmer).
+* Tests on data sets are now included as a method in `DataClass`. `test_regional-datasets` now calls the test function for all classes at each level. Data set specific tests (such as for NHS regions in the UK) are included as a `specific_tests` function within the country class, which is called by the parent (DataClass) `test` after performing standard checks. This allows all the code about a country to be defined in its own class. In addition, users can run tests interactively by calling the test method (e.g. `$test()`) (by @joseph-palmer)
+* A function to create a template class and automatically add a github workflow file has been added. This makes adding a new data source for a country even easier as now you can call the function `make_new_data_source()` with the country / source name to add and it will set up the basic structure for you. There is also now a github check to make sure all new sources have a workflow set up (by @joseph-palmer).
+* Adds `source_` fields to all data sets to help users properly attribute their data sources (by @RichardMN).
+
+## Bug fixes
+
+* An issue where the `Lithuania()` data set would ignore optional class specific arguments has been fixed (by @RichardMN).
+* An issue where the `JHU()` source had multiple region codes for each country has been fixed, giving just one region code per country (by @joseph-palmer).
+
 # covidregionaldata 0.9.1
 
 This release adds support for data sets from John Hopkins University and the Google open data project. Both of these sources aggregate a range of data at national and subnational levels. It also contains a range of small fixes and improvements to documentation. Finally, this release adds optional data processing which will be extended in future releases (contributions warmly welcomed).
@@ -8,7 +38,7 @@ Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for contributions toward
 
 * Support for data provided by John Hopkins University (by @joseph-palmer).
 * Support for data provided by Google COVID-19 open data project (by @joseph-palmer).
-* Added a `available_regions` method for all classes that shows level 1 regions with data available for the region of interest. This is of particular use when combined with the JHU or Google datasets where processing a large number of regions that are not required can take some time. 
+* Added a `available_regions` method for all classes that shows level 1 regions with data available for the region of interest. This is of particular use when combined with the JHU or Google datasets where processing a large number of regions that are not required can take some time.
 * Adds support for JHU or Google data to `get_national_data()`. This may also now be used to access lower level data from these sources  but it may be better to instead use the classes directly or via `initialise_dataclass()`.
 
 ## Other changes
@@ -30,7 +60,7 @@ Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for major contributions 
 ## New features
 
 * Track data processing from raw to clean using the `step = TRUE` argument in `get_regional_data()`.
-* Filter datasets for regions and countries of interest. 
+* Filter datasets for regions and countries of interest.
 * Access the underlying methods for data sets and all steps in the data processing pipeline.
 
 ## Documentation

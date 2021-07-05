@@ -21,8 +21,10 @@ national$return()
 }
 \seealso{
 National data sources
+\code{\link{Covid19DataHub}},
 \code{\link{Google}},
 \code{\link{JHU}},
+\code{\link{JRC}},
 \code{\link{WHO}}
 }
 \concept{dataset}
@@ -44,6 +46,11 @@ National data sources
 \item{\code{common_data_urls}}{List of named links to raw data.}
 
 \item{\code{source_data_cols}}{existing columns within the raw data}
+
+\item{\code{source_text}}{Plain text description of the source of the data}
+
+\item{\code{source_url}}{Website address for explanation/introduction of the
+data}
 }
 \if{html}{\out{</div>}}
 }
@@ -52,6 +59,7 @@ National data sources
 \itemize{
 \item \href{#method-clean_common}{\code{ECDC$clean_common()}}
 \item \href{#method-return}{\code{ECDC$return()}}
+\item \href{#method-specific_tests}{\code{ECDC$specific_tests()}}
 \item \href{#method-clone}{\code{ECDC$clone()}}
 }
 }
@@ -66,6 +74,7 @@ National data sources
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="process">}\href{../../covidregionaldata/html/DataClass.html#method-process}{\code{covidregionaldata::DataClass$process()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="set_region_codes">}\href{../../covidregionaldata/html/DataClass.html#method-set_region_codes}{\code{covidregionaldata::DataClass$set_region_codes()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="summary">}\href{../../covidregionaldata/html/DataClass.html#method-summary}{\code{covidregionaldata::DataClass$summary()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="test">}\href{../../covidregionaldata/html/DataClass.html#method-test}{\code{covidregionaldata::DataClass$test()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="CountryDataClass" data-id="filter">}\href{../../covidregionaldata/html/CountryDataClass.html#method-filter}{\code{covidregionaldata::CountryDataClass$filter()}}\out{</span>}
 }
 \out{</details>}
@@ -89,6 +98,27 @@ Specific return settings for the ECDC dataset.
 \if{html}{\out{<div class="r">}}\preformatted{ECDC$return()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-specific_tests"></a>}}
+\if{latex}{\out{\hypertarget{method-specific_tests}{}}}
+\subsection{Method \code{specific_tests()}}{
+Run additional tests on ECDC class. Tests ECDC has required
+additional columns and that there is only one row per country. Designed
+to be run from \code{test} and not run directly.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{ECDC$specific_tests(self_copy, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{self_copy}}{R6class the object to test}
+
+\item{\code{...}}{Extra params passed to specific download functions}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

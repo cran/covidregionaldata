@@ -19,9 +19,11 @@ national$return()
 }
 \seealso{
 National data sources
+\code{\link{Covid19DataHub}},
 \code{\link{ECDC}},
 \code{\link{Google}},
-\code{\link{JHU}}
+\code{\link{JHU}},
+\code{\link{JRC}}
 }
 \concept{dataset}
 \concept{national}
@@ -43,6 +45,11 @@ National data sources
 only entry, is be named main.}
 
 \item{\code{source_data_cols}}{existing columns within the raw data}
+
+\item{\code{source_text}}{Plain text description of the source of the data}
+
+\item{\code{source_url}}{Website address for explanation/introduction of the
+data}
 }
 \if{html}{\out{</div>}}
 }
@@ -51,6 +58,7 @@ only entry, is be named main.}
 \itemize{
 \item \href{#method-clean_common}{\code{WHO$clean_common()}}
 \item \href{#method-return}{\code{WHO$return()}}
+\item \href{#method-specific_tests}{\code{WHO$specific_tests()}}
 \item \href{#method-clone}{\code{WHO$clone()}}
 }
 }
@@ -65,6 +73,7 @@ only entry, is be named main.}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="process">}\href{../../covidregionaldata/html/DataClass.html#method-process}{\code{covidregionaldata::DataClass$process()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="set_region_codes">}\href{../../covidregionaldata/html/DataClass.html#method-set_region_codes}{\code{covidregionaldata::DataClass$set_region_codes()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="summary">}\href{../../covidregionaldata/html/DataClass.html#method-summary}{\code{covidregionaldata::DataClass$summary()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="test">}\href{../../covidregionaldata/html/DataClass.html#method-test}{\code{covidregionaldata::DataClass$test()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="CountryDataClass" data-id="filter">}\href{../../covidregionaldata/html/CountryDataClass.html#method-filter}{\code{covidregionaldata::CountryDataClass$filter()}}\out{</span>}
 }
 \out{</details>}
@@ -88,6 +97,26 @@ Specific return settings for the WHO dataset.
 \if{html}{\out{<div class="r">}}\preformatted{WHO$return()}\if{html}{\out{</div>}}
 }
 
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-specific_tests"></a>}}
+\if{latex}{\out{\hypertarget{method-specific_tests}{}}}
+\subsection{Method \code{specific_tests()}}{
+Run additional tests on WHO data. Tests that there is only
+one row per country. Designed to be ran from \code{test} and not ran directly.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{WHO$specific_tests(self_copy, ...)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{self_copy}}{R6class the object to test}
+
+\item{\code{...}}{Extra params passed to specific download functions}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}

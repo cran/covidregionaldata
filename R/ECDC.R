@@ -36,6 +36,11 @@ ECDC <- R6::R6Class("ECDC",
     ),
     #' @field source_data_cols existing columns within the raw data
     source_data_cols = c("cases_new", "deaths_new"),
+    #' @field source_text Plain text description of the source of the data
+    source_text = "European Centre for Disease Prevention and Control (ECDC)",
+    #' @field source_url Website address for explanation/introduction of the
+    #' data
+    source_url = "https://www.ecdc.europa.eu/en/publications-data/download-todays-data-geographic-distribution-covid-19-cases-worldwide", # nolint
 
     #' @description ECDC specific state level data cleaning
     #' @importFrom dplyr mutate rename select arrange filter
@@ -119,6 +124,29 @@ ECDC <- R6::R6Class("ECDC",
       } else {
         return(self$data$return)
       }
+    },
+
+    #' @description Run additional tests on ECDC class. Tests ECDC has required
+    #' additional columns and that there is only one row per country. Designed
+    #' to be run from `test` and not run directly.
+    #' @param self_copy R6class the object to test
+    #' @param ... Extra params passed to specific download functions
+    #' @importFrom dplyr filter group_by tally
+    specific_tests = function(self_copy, ...) {
+      testthat::test_that("ecdc data has expected format", {
+        necessary_cols <- c(
+          "geoId", "countriesAndTerritories",
+          "cases", "deaths", "popData2019"
+        )
+        testthat::expect_true(
+          all(necessary_cols %in% colnames(self_copy$data$raw$main))
+        )
+        all_countries <- self_copy$data$return %>%
+          filter(is.na(un_region)) %>%
+          group_by(country) %>%
+          tally()
+        testthat::expect_true(nrow(all_countries) == 0)
+      })
     }
   )
 )

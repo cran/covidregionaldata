@@ -55,11 +55,14 @@ jhu_level_2$return()
 }
 \seealso{
 Aggregated data sources
+\code{\link{Covid19DataHub}},
 \code{\link{Google}}
 
 National data sources
+\code{\link{Covid19DataHub}},
 \code{\link{ECDC}},
 \code{\link{Google}},
+\code{\link{JRC}},
 \code{\link{WHO}}
 
 Subnational data sources
@@ -67,6 +70,7 @@ Subnational data sources
 \code{\link{Brazil}},
 \code{\link{Canada}},
 \code{\link{Colombia}},
+\code{\link{Covid19DataHub}},
 \code{\link{Cuba}},
 \code{\link{France}},
 \code{\link{Germany}},
@@ -75,7 +79,9 @@ Subnational data sources
 \code{\link{Italy}},
 \code{\link{Lithuania}},
 \code{\link{Mexico}},
+\code{\link{Netherlands}},
 \code{\link{SouthAfrica}},
+\code{\link{Switzerland}},
 \code{\link{UK}},
 \code{\link{USA}}
 }
@@ -101,6 +107,11 @@ Subnational data sources
 only entry, is be named main.}
 
 \item{\code{source_data_cols}}{existing columns within the raw data}
+
+\item{\code{source_text}}{Plain text description of the source of the data}
+
+\item{\code{source_url}}{Website address for explanation/introduction of the
+data}
 }
 \if{html}{\out{</div>}}
 }
@@ -124,6 +135,7 @@ only entry, is be named main.}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="process">}\href{../../covidregionaldata/html/DataClass.html#method-process}{\code{covidregionaldata::DataClass$process()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="return">}\href{../../covidregionaldata/html/DataClass.html#method-return}{\code{covidregionaldata::DataClass$return()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="summary">}\href{../../covidregionaldata/html/DataClass.html#method-summary}{\code{covidregionaldata::DataClass$summary()}}\out{</span>}
+\item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="DataClass" data-id="test">}\href{../../covidregionaldata/html/DataClass.html#method-test}{\code{covidregionaldata::DataClass$test()}}\out{</span>}
 \item \out{<span class="pkg-link" data-pkg="covidregionaldata" data-topic="CountryDataClass" data-id="filter">}\href{../../covidregionaldata/html/CountryDataClass.html#method-filter}{\code{covidregionaldata::CountryDataClass$filter()}}\out{</span>}
 }
 \out{</details>}

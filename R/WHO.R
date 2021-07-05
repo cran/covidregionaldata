@@ -38,6 +38,12 @@ WHO <- R6::R6Class("WHO",
       "deaths_new",
       "deaths_total"
     ),
+    #' @field source_text Plain text description of the source of the data
+    source_text = "World Health Organisation",
+    #' @field source_url Website address for explanation/introduction of the
+    #' data
+    source_url = "https://covid19.who.int",
+
 
     #' @description WHO specific data cleaning
     #' @importFrom dplyr mutate rename
@@ -93,6 +99,21 @@ WHO <- R6::R6Class("WHO",
       } else {
         return(self$data$return)
       }
+    },
+
+    #' @description Run additional tests on WHO data. Tests that there is only
+    #' one row per country. Designed to be ran from `test` and not ran directly.
+    #' @param self_copy R6class the object to test
+    #' @param ... Extra params passed to specific download functions
+    #' @importFrom dplyr filter group_by tally
+    specific_tests = function(self_copy, ...) {
+      testthat::test_that("who data has expected format", {
+        all_countries <- self_copy$data$return %>%
+          filter(is.na(un_region)) %>%
+          group_by(country) %>%
+          tally()
+        testthat::expect_true(nrow(all_countries) == 0)
+      })
     }
   )
 )
