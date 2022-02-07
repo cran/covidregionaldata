@@ -302,6 +302,20 @@ DataClass <- R6::R6Class(
       )
     },
 
+    #' @description Download raw data from `data_urls`, stores a named list
+    #' of the `data_url` name and the corresponding raw data table in
+    #' `data$raw`. Designed as a drop-in replacement for `download` so
+    #' it can be used in sub-classes.
+    #' @importFrom purrr map
+    download_JSON = function() {
+      if (length(self$data_urls) == 0) {
+        stop("No data to download as data_urls is empty")
+      }
+      self$data$raw <- map(self$data_urls, json_reader,
+        verbose = self$verbose
+      )
+    },
+
     #' @description Cleans raw data (corrects format, converts column types,
     #' etc). Works on raw data and so should be called after
     #' \href{#method-download}{\code{download()}}
@@ -337,8 +351,7 @@ DataClass <- R6::R6Class(
     #' field.
     #' @param level A character string indicating the level to filter at.
     #' Defaults to using the `filter_level` field if not specified
-    #' @importFrom tidyselect all_of
-    #' @importFrom dplyr select filter pull
+    #' @importFrom dplyr select filter pull all_of
     available_regions = function(level) {
       if (is.null(self$data$clean)) {
         stop("Data must first be cleaned using the clean method")
@@ -491,7 +504,7 @@ DataClass <- R6::R6Class(
 
     #' @description Create a table of summary information for the data set
     #' being processed.
-    #' @importFrom tibble tibble
+    #' @importFrom dplyr tibble
     #' @return Returns a single row summary tibble containing the origin of the
     #' data source, class, level 1 and 2 region names, the type of data,
     #' the urls of the raw data and the columns present in the raw data.
@@ -625,9 +638,12 @@ CountryDataClass <- R6::R6Class("CountryDataClass",
         }
 
         if (!is.null(self$target_regions)) {
-          self$target_regions <- countryname(
-            self$target_regions,
-            destination = "country.name.en"
+          self$target_regions <- suppressWarnings(
+              countryname(
+              self$target_regions,
+              destination = "country.name.en",
+              warn = FALSE
+            )
           )
           if (all(is.na(self$target_regions))) {
             stop("No countries found with target names")

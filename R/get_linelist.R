@@ -21,10 +21,9 @@
 #'
 #' @keywords internal
 #'
-#' @importFrom lifecycle deprecate_warn
+#' @importFrom lifecycle deprecate_stop
 #' @importFrom dplyr if_else select mutate filter
 #' @importFrom lubridate dmy
-#' @importFrom tibble as_tibble
 #' @importFrom utils download.file untar
 #' @examples
 #' \dontrun{
@@ -36,7 +35,7 @@
 #' }
 #'
 get_linelist <- function(clean = TRUE, report_delay_only = FALSE) {
-  deprecate_warn(
+  deprecate_stop(
     when = "0.9.0",
     what = "covidregionaldata::get_linelist()",
     details = c(

@@ -1,9 +1,9 @@
 
-# Subnational data for the COVID-19 outbreak <img src="man/figures/logo.png" align="right" alt="" height="150" />
+# Subnational data for the COVID-19 outbreak <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 [![R-CMD-check](https://github.com/epiforecasts/covidregionaldata/workflows/R-CMD-check/badge.svg)](https://github.com/epiforecasts/covidregionaldata/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/epiforecasts/covidregionaldata/branch/master/graph/badge.svg)](https://codecov.io/gh/epiforecasts/covidregionaldata?branch=master)
+coverage](https://codecov.io/gh/epiforecasts/covidregionaldata/branch/master/graph/badge.svg)](https://app.codecov.io/gh/epiforecasts/covidregionaldata?branch=master)
 [![Data
 status](https://img.shields.io/badge/Data-status-lightblue.svg?style=flat)](https://epiforecasts.io/covidregionaldata/articles/supported-countries.html)
 [![metacran
@@ -17,9 +17,9 @@ contributors](https://img.shields.io/github/contributors/epiforecasts/covidregio
 Welcome](https://img.shields.io/badge/PRs-welcome-yellow.svg)](https://makeapullrequest.com/)
 [![GitHub
 commits](https://img.shields.io/github/commits-since/epiforecasts/covidregionaldata/0.9.2.svg?color=orange)](https://GitHub.com/epiforecasts/covidregionaldata/commit/master/)
-[![DOI](https://zenodo.org/badge/271601189.svg)](https://zenodo.org/badge/latestdoi/271601189)
 
-[![DOI](https://joss.theoj.org/papers/10.21105/joss.03290/status.svg)](https://doi.org/10.21105/joss.03290)
+[![JOSS](https://joss.theoj.org/papers/10.21105/joss.03290/status.svg)](https://doi.org/10.21105/joss.03290)
+[![Zenodo](https://zenodo.org/badge/271601189.svg)](https://zenodo.org/badge/latestdoi/271601189)
 
 Interface to subnational and national level COVID-19 data sourced from
 both official sources, such as Public Health England in the UK, and from
@@ -79,7 +79,7 @@ the temporary directory by default),
 
 ``` r
 start_using_memoise()
-#> Using a cache at: /tmp/RtmpvmRzcu
+#> Using a cache at: /tmp/RtmpPgZXiv
 ```
 
 To stop using `memoise` use,
@@ -97,14 +97,14 @@ reset_cache()
 ### National data
 
 To get worldwide time-series data by country (sourced from the World
-Health Organisation (WHO) by default by also optionally from the
+Health Organisation (WHO) by default but also optionally from the
 European Centre for Disease Control (ECDC), John Hopkins University, or
 the Google COVID-19 open data project), use:
 
 ``` r
 nots <- get_national_data()
 #> Downloading data from https://covid19.who.int/WHO-COVID-19-global-data.csv
-#> Rows: 130227 Columns: 8
+#> Rows: 142911 Columns: 8
 #> ── Column specification ────────────────────────────────────────────────────────
 #> Delimiter: ","
 #> chr  (3): Country_code, Country, WHO_region
@@ -116,7 +116,7 @@ nots <- get_national_data()
 #> Cleaning data
 #> Processing data
 nots
-#> # A tibble: 130,349 x 15
+#> # A tibble: 142,911 × 15
 #>    date       un_region who_region country        iso_code cases_new cases_total
 #>    <date>     <chr>     <chr>      <chr>          <chr>        <dbl>       <dbl>
 #>  1 2020-01-03 Asia      EMRO       Afghanistan    AF               0           0
@@ -126,10 +126,10 @@ nots
 #>  5 2020-01-03 Europe    EURO       Andorra        AD               0           0
 #>  6 2020-01-03 Africa    AFRO       Angola         AO               0           0
 #>  7 2020-01-03 Americas  AMRO       Anguilla       AI               0           0
-#>  8 2020-01-03 Americas  AMRO       Antigua & Bar… AG               0           0
+#>  8 2020-01-03 Americas  AMRO       Antigua & Barbuda AG               0           0
 #>  9 2020-01-03 Americas  AMRO       Argentina      AR               0           0
 #> 10 2020-01-03 Asia      EURO       Armenia        AM               0           0
-#> # … with 130,339 more rows, and 8 more variables: deaths_new <dbl>,
+#> # … with 142,901 more rows, and 8 more variables: deaths_new <dbl>,
 #> #   deaths_total <dbl>, recovered_new <dbl>, recovered_total <dbl>,
 #> #   hosp_new <dbl>, hosp_total <dbl>, tested_new <dbl>, tested_total <dbl>
 ```
@@ -170,7 +170,7 @@ for example by level 1 region in the UK, use:
 ``` r
 uk_nots <- get_regional_data(country = "UK", verbose = FALSE)
 uk_nots
-#> # A tibble: 6,786 x 26
+#> # A tibble: 7,501 × 26
 #>    date       region   region_code cases_new cases_total deaths_new deaths_total
 #>    <date>     <chr>    <chr>           <dbl>       <dbl>      <dbl>        <dbl>
 #>  1 2020-01-30 East Mi… E12000004          NA          NA         NA           NA
@@ -183,16 +183,13 @@ uk_nots
 #>  8 2020-01-30 Scotland S92000003          NA          NA         NA           NA
 #>  9 2020-01-30 South E… E12000008          NA          NA         NA           NA
 #> 10 2020-01-30 South W… E12000009          NA          NA         NA           NA
-#> # … with 6,776 more rows, and 19 more variables: recovered_new <dbl>,
+#> # … with 7,491 more rows, and 19 more variables: recovered_new <dbl>,
 #> #   recovered_total <dbl>, hosp_new <dbl>, hosp_total <dbl>, tested_new <dbl>,
 #> #   tested_total <dbl>, areaType <chr>, cumCasesByPublishDate <dbl>,
 #> #   cumCasesBySpecimenDate <dbl>, newCasesByPublishDate <dbl>,
 #> #   newCasesBySpecimenDate <dbl>, cumDeaths28DaysByDeathDate <dbl>,
 #> #   cumDeaths28DaysByPublishDate <dbl>, newDeaths28DaysByDeathDate <dbl>,
-#> #   newDeaths28DaysByPublishDate <dbl>, newPillarFourTestsByPublishDate <lgl>,
-#> #   newPillarOneTestsByPublishDate <dbl>,
-#> #   newPillarThreeTestsByPublishDate <dbl>,
-#> #   newPillarTwoTestsByPublishDate <dbl>
+#> #   newDeaths28DaysByPublishDate <dbl>, …
 ```
 
 Now we have the data we can create plots, for example the time-series of
@@ -238,7 +235,7 @@ using the following,
     #>   Joseph Palmer, Katharine Sherratt, Richard Martin-Nielsen, Jonnie
     #>   Bevan, Hamish Gibbs, Sebastian Funk and Sam Abbott (2021).
     #>   covidregionaldata: Subnational data for COVID-19 epidemiology, DOI:
-    #>   10.5281/zenodo.3957539
+    #>   10.21105/joss.03290
     #> 
     #> A BibTeX entry for LaTeX users is
     #> 
@@ -248,9 +245,9 @@ using the following,
     #>     journal = {Journal of Open Source Software},
     #>     year = {2021},
     #>     volume = {6},
-    #>     number = {62},
+    #>     number = {63},
     #>     pages = {3290},
-    #>     doi = {10.5281/zenodo.3957539},
+    #>     doi = {10.21105/joss.03290},
     #>   }
 
 ## Development

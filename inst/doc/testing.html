@@ -150,16 +150,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ukdata <span class="ot">&lt;-</span> UK<span class="sc">$</span><span class="fu">new</span>(<span class="at">level =</span> <span class="st">&quot;1&quot;</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># could use anything but I used the acutal test one here for simplicity</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ukdata<span class="sc">$</span><span class="fu">test</span>(<span class="at">snapshot_dir =</span> <span class="st">&quot;../tests/testthat/custom_data/&quot;</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 😸</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🥳</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎉</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🌈</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🥇</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🥇</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 😀</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🌈</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎉</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🥳</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎊</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 😀</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎉</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎊</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎉</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🎉</span></span></code></pre></div>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 😀</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Test passed 🥇</span></span></code></pre></div>
 <p>Here, I break down the different components of this function to walk through how the tests are run.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ukdata<span class="sc">$</span>test</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (download = FALSE, snapshot_dir = paste0(tempdir(), </span></span>
@@ -182,7 +182,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         eval(parse(text = specific))</span></span>
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x564cbd0097a0&gt;</span></span></code></pre></div>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x5600b53b2d90&gt;</span></span></code></pre></div>
 <p>For a given country, such as the UK, you would make this by calling something like <code>ukdata &lt;- UK$new(level = &quot;1&quot;)</code> and can run the steps one by one by calling the respective methods: <code>ukdata$download(); ukdata$clean(); ukdata$process()</code>. To run the tests you would call <code>ukdata$test(shapshot_dir = &quot;place/2/save/snapshots&quot;)</code> By default, if <code>snapshot_dir</code> is not given it will use a generic <code>snapsots</code> directory. The <code>snapshot_dir</code> argument specifies a directory to save data snapshots to and if it doesn’t exist it will make it for you. The file is constructed internally from the object you are testing and the data level, e.g. <code>Uk_level_1.rds</code>. Rather than running tests on your active class, the code first makes a clone of your class which is then used for tests: <code>self_copy &lt;- self$clone()</code> The snapshot path is the path to a rds file where you either have stored some raw downloaded data to test, or where you want a downloaded snapshot of the data to end up. This is handled by the function <code>test_download()</code>. The cloned class is passed to this function, along with the download parameter, which dictates whether to overwrite the snapshot file provided.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>test_download</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; function (DataClass_obj, download, snapshot_path) </span></span>
@@ -197,21 +197,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 walk(DataClass_obj$data$raw, function(data) {</span></span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                   testthat::expect_s3_class(data, &quot;data.frame&quot;)</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                   testthat::expect_true(nrow(data) &gt; 0)</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                   testthat::expect_true(ncol(data) &gt;= 2)</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 })</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             })</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- map(DataClass_obj$data$raw, </span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             slice_tail, n = 250)</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- map(DataClass_obj$data$raw, </span></span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             ~.[, 1:min(100, ncol(.))])</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         saveRDS(DataClass_obj$data$raw, snapshot_path)</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     else {</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- readRDS(snapshot_path)</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x564cbcf707b0&gt;</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:covidregionaldata&gt;</span></span></code></pre></div>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                   testthat::expect_true(ncol(data) &gt;= 2 || typeof(data[[1]]) == </span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                     &quot;list&quot;)</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 })</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             })</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- map(DataClass_obj$data$raw, </span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             slice_tail, n = 250)</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- map(DataClass_obj$data$raw, </span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             ~.[, seq_len(min(100, ncol(.)))])</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         saveRDS(DataClass_obj$data$raw, snapshot_path)</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     else {</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         DataClass_obj$data$raw &lt;- readRDS(snapshot_path)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     }</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x5600b0ac24a0&gt;</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:covidregionaldata&gt;</span></span></code></pre></div>
 <p>As shown by the code, if the data is to be downloaded (either through requesting this with the download parameter or by providing a path to a none existent file) then the download method is called on the class copy (<code>DataClass_obj</code>): <code>DataClass_obj$download()</code>. After this has downloaded the code tests the data is a data.frame, is not empty and has at least 2 columns. The code then takes the first 250 rows to work on, as using the whole data set could be very slow and for the purpose of testing is not needed. This sliced data is then saved to the snapshot file provided for use later on. If the data is not to be downloaded, the snapshot of data saved in the snapshot path is loaded as the raw data <code>DataClass_obj$data$raw</code>.</p>
 <p>Once the data is downloaded, the cleaning methods are then tested <code>test_cleaning()</code>. Again this function takes the copied class as the argument and runs through tests on the clean data. These tests check the data is a data.frame, is not empty, has more than 2 columns and that the method <code>avaliable_regions</code> returns a list of characters. In addition, <code>expect_clean_cols</code> checks the date column is an s3 class and that region level column is a character in the cleaned data (<code>data$clean</code>).</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>test_cleaning</span>
@@ -236,7 +237,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 &quot;character&quot;)</span></span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         })</span></span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x564cbcf7ead8&gt;</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x5600b0ac7940&gt;</span></span>
 <span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:covidregionaldata&gt;</span></span></code></pre></div>
 <p>Once cleaning has been tested <code>test_processing()</code> is called to process the data and run tests to check it all works. Again this function takes the clone of the class to work on, the same clone which has been called with the preceding functions. These tests check the data is a data.frame, is not empty, has more than 2 columns. In addition <code>expect_processed_cols</code> checks that processed data columns date, cases_new, cases_total, deaths_new, deaths_total and that region level have the correct types.</p>
 <p>In processing there is an extra parameter called <code>all</code>. This parameter, if <code>TRUE</code> runs the processing step with both localised as <code>TRUE</code> and <code>FALSE</code>, making another copy of the object to check the localised data on so not to influence further tests. If <code>FALSE</code> processing is ran with localised set to whatever it is set at prior to <code>test()</code> being invoked.</p>
@@ -263,7 +264,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             }</span></span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         })</span></span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x564cb7fca940&gt;</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x5600af765dd0&gt;</span></span>
 <span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:covidregionaldata&gt;</span></span></code></pre></div>
 <p>After processing the return method is tested with <code>test_return</code> which check the data is a data.frame, is not empty, has more than 2 columns and that all columns contain data and are not just composed of NAs.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>test_return</span>
@@ -280,7 +281,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         })</span></span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     expect_columns_contain_data(DataClass_obj)</span></span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; }</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x564cbb9f25c0&gt;</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x5600b2382208&gt;</span></span>
 <span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:covidregionaldata&gt;</span></span></code></pre></div>
 <p>These tests form the generic tests applied to all classes. However, country specific tests are then called by calling the method <code>specific_tests</code> if that country has specific tests defined. So for <code>Italy</code>, where there are no specific tests, no specific tests are called, but for <code>UK</code>, <code>WHO</code> and <code>ECDC</code> specific tests are ran though, which are defined in their own country class. These functions should take a clone of the class as an argument (<code>self_copy</code> ) and any additional arguments they may need, such as a path to NHS included data for <code>UK</code>.</p>
 </div>

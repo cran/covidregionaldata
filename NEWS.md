@@ -1,6 +1,37 @@
+# covidregionaldata 0.9.3
+
+This is largely a patch release dealing with processing issues introduced by the recent release of `tidyr 1.2.0`. In addition support for data from Estonia and Vietnam has been added. See the full release notes for details. Thanks to @RichardMN, @biocyberman, @Bisaloo, @sbfnk, and @kathsherratt for contributing to this release.
+
+## New data sets
+
+* Support for level 1 region data in Estonia (thanks to @RichardMN). See `?Estonia` for details.
+* Support for level 1 region data in Vietnam (thanks to @biocyberman). See `?Vietnam` for details. Note that this class is only available if installing the `vietnam` branch from GitHub due to API instability issues. 
+
+## Other changes
+
+* Change the data source for Switzerland to draw data from the Swiss Federal Office of Public Health (FOPH)
+* Updated the package logo to include the newly supported data sets.
+* Reduced the number of package dependencies (@bisaloo and @RichardMN)
+* Added tests for JSON download code (@RichardMN).
+
+## Bug fixes
+
+- Fixed a bug in `fill_empty_dates_with_na()` caused by changes made in version `1.2.0` of `tidyr`. 
+- Fixed a bug in the data sourced from Germany so that instead of treating it as a line list of individuals it is treated as a relatively finely resolved count data which needs to be summed up (by @sbfnk).
+- Fixed a bug in the Vietnam class due to `stringr` ([#448](https://github.com/epiforecasts/covidregionaldata/pull/448) by @RichardMN).
+- Fixed a bug with the Netherlands class were the lack of Hospitalisation data in the source was causing the class to fail ([#446](https://github.com/epiforecasts/covidregionaldata/pull/446) by @RichardMN).
+- Fixed an issue with the Colombia data and reduced dependencies by making `RSocrata` be a suggested package ([#433](https://github.com/epiforecasts/covidregionaldata/pull/433) by @RichardMN).
+
+## Depreciations
+
+- `get_interventions_data()` has been depreciated and removed.
+- `get_info_covidregionaldata()` has been depreciated and removed.
+- The `country` argument to `get_national_data()`  has been depreciated and removed. It's functionality can be replicated using the `countries` argument.
+- `get_linelist()` has been updated to fail on use vs warn on use and will be removed from future versions of the package. 
+
 # covidregionaldata 0.9.2
 
-This release adds support for the Covid19 Data Hub which includes Google and Apple mobility data amongst a large range of other data sets, data from the European Commission's Joint Research Centre which is at both the regional and national level, and individual sources for regional data from several countries. Package updates have been made in line with a software review at the [Journal of Open Source Software](https://github.com/openjournals/joss-reviews/issues/3290). Finally, this release exposes more of the testing infrastructure to users and adds a package hexsticker. 
+This release adds support for the Covid19 Data Hub which includes Google and Apple mobility data amongst a large range of other data sets, data from the European Commission's Joint Research Centre which is at both the regional and national level, and individual sources for regional data from several countries. Package updates have been made in line with a software review at the [Journal of Open Source Software](https://github.com/openjournals/joss-reviews/issues/3290). Finally, this release exposes more of the testing infrastructure to users and adds a package hexsticker.
 
 Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for contributions towards this release.
 
@@ -71,13 +102,13 @@ Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for major contributions 
 ## Technical improvements
 
 * `get_regional_data()` and `get_national_data()` now use R6 method dispatch. This is an internal change and so should have minimal user impact for users of the `get_` functions. However, all datasets are now available to be used as R6 methods (see `get_available_datasets`) which may allow for more modular use cases. These classes can also be initialised using `initialise_dataclass()` which is used internally by both `get_regional_data()` and `get_national_data()`.
-* Unit testing has been separated from data downloading which is now tested individually by data set. This allows for contributors to more easily assess the impact of their additions and also allows us to publish data status updates for each data sets (see the README: https://github.com/epiforecasts/covidregionaldata#readme).
+* Unit testing has been separated from data downloading which is now tested individually by data set. This allows for contributors to more easily assess the impact of their additions and also allows us to publish data status updates for each data sets (see the README: <https://github.com/epiforecasts/covidregionaldata#readme>).
 
 ## Deprecated functions
 
 * `get_available_datasets()` replaces `get_info_covidregionaldata()` to view available data. `get_info_covidregionaldata()` is deprecated.
-* `get_interventions_data()` is deprecated. These data no longer update as of December 2020. Check for alternatives at https://supertracker.spi.ox.ac.uk/policy-trackers/
-* `get_linelist` is deprecated. Linelist stopped updating June 2020. Up to date linelist data are now behind a login: access at https://global.health/. We are working on a solution for accessing with `covidregionaldata`.
+* `get_interventions_data()` is deprecated. These data no longer update as of December 2020. Check for alternatives at <https://supertracker.spi.ox.ac.uk/policy-trackers/>
+* `get_linelist` is deprecated. Linelist stopped updating June 2020. Up to date linelist data are now behind a login: access at <https://global.health/>. We are working on a solution for accessing with `covidregionaldata`.
 
 ## Data changes since 0.8.3
 
@@ -89,7 +120,6 @@ Thanks to @joseph-palmer, @RichardMN, and @kathsherratt for major contributions 
 * UK Level 1 'ons_region_code' is now 'region_code'.
 * UK level 2 "ltla_code" is now "local_authority_code".
 * `get_available_datasets()` now return an origin column rather than a country column and a type column rather than a get_data_function to better reflect the types of data supported.
-
 
 # covidregionaldata 0.8.3
 
